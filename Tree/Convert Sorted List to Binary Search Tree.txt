@@ -1,0 +1,24 @@
+//best solution,O(n)+O(logn)£¨Õ»¿Õ¼ä£©
+//http://leetcode.com/2010/11/convert-sorted-list-to-balanced-binary.html
+class Solution {
+    TreeNode* RecChange(ListNode* &head,int s,int e){
+      if(s>e) return NULL;
+      int mid = (s+e)/2;
+      TreeNode* left_child = RecChange(head,s,mid-1);
+      TreeNode* root = new TreeNode(head->val);
+      head = head->next;
+      root->left = left_child;
+      root->right = RecChange(head,mid+1,e);
+      return root;
+    }
+public:
+    TreeNode *sortedListToBST(ListNode *head) {
+      ListNode* ite = head;
+      int len = 0;
+      while(ite){
+        ite = ite->next;
+        len++;
+      }
+      return RecChange(head,0,len-1);
+    }
+};

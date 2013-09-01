@@ -1,0 +1,23 @@
+
+class Solution {
+public:
+    int findMaxSum(TreeNode* root,int& pathMax,int& maxNode){
+        if(root==NULL){
+            pathMax = 0;
+            return 0;
+        }
+        if(root->val>maxNode) maxNode = root->val;
+        int left,right,leftPath,rightPath;
+        left = findMaxSum(root->left,leftPath,maxNode);
+        right = findMaxSum(root->right,rightPath,maxNode);
+        pathMax = max(max(leftPath,rightPath)+root->val,0);
+        return max(max(left,right),leftPath+rightPath+root->val);
+    }
+    int maxPathSum(TreeNode *root) {
+        if(root==NULL) return 0;
+        int m,maxNode=root->val;
+        int ans = findMaxSum(root,m,maxNode);
+        if(ans==0) return maxNode;
+        return ans;
+    }
+};

@@ -1,0 +1,19 @@
+class Solution {
+public:
+    vector<string> anagrams(vector<string> &strs) {
+        map<string,vector<string>> feature_map;
+        for(int i=0;i<strs.size();i++){
+            string sort_feature = strs[i];
+            sort(sort_feature.begin(),sort_feature.end());
+            feature_map[sort_feature].push_back(strs[i]);
+        }
+        vector<string> ang;
+        for(auto ite=feature_map.begin();ite!=feature_map.end();ite++){
+            if(ite->second.size()>1){
+                for(int i=0;i<ite->second.size();i++)
+                   ang.push_back(ite->second[i]);
+            }
+        }
+        return ang;
+    }
+};

@@ -1,0 +1,50 @@
+class Solution {
+    vector<vector<bool>> sign_r;
+    vector<vector<bool>> sign_c;
+    vector<vector<bool>> sign_g;
+    
+    bool IsValidate(int r,int c,int num){
+      return !sign_r[r][num] && !sign_c[c][num] && !sign_g[r/3*3+c/3][num];
+    }
+    
+    bool RecSolve(vector<vector<char>>& board, int pos){
+      if(pos == 81)
+        return true;
+      int row = pos / 9, col = pos % 9;
+      if(board[row][col] != '.')
+        return RecSolve(board,pos+1);
+      else{
+        for(int i = 0; i < 9; ++i){
+          if(IsValidate(row,col,i)){
+            sign_r[row][i] = true;
+            sign_c[col][i] = true;
+            sign_g[row/3*3+col/3][i] = true;
+            board[row][col] = i + '1';
+            if(RecSolve(board,pos+1))
+              return true;
+            sign_r[row][i] = false;
+            sign_c[col][i] = false;
+            sign_g[row/3*3+col/3][i] = false;
+            board[row][col] = '.';              //一定要改回来
+          }
+        }
+      }
+      return false;
+    }
+public:
+    void solveSudoku(vector<vector<char> > &board) {
+      sign_r = vector<vector<bool>>(9,vector<bool>(9));  //不要用resize，resize会保持原来的不变，把新增的部分改变而已
+      sign_c = vector<vector<bool>>(9,vector<bool>(9));  
+      sign_g = vector<vector<bool>>(9,vector<bool>(9));
+      for(int i = 0; i < 9; ++i){
+        for(int j = 0; j < 9; ++j){
+          if(board[i][j] != '.'){
+            sign_r[i][board[i][j]-'1'] = true;
+            sign_c[j][board[i][j]-'1'] = true;
+            sign_g[i/3*3+j/3][board[i][j]-'1'] = true;
+          }
+        }
+      }
+      RecSolve(board,0);
+    }
+};

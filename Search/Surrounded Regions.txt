@@ -1,0 +1,110 @@
+//复杂度O(nm)+O(nm)
+class Solution {
+public:
+    
+    bool isSurrounded(const vector<vector<char>>& board, set<int>& visited,int grid,vector<int>& grids)
+    {
+        queue<int> q;
+        q.push(grid);
+	int dir[4][2] = {{1,0},{0,1},{-1,0},{0,-1}};
+        bool sign = true;
+        grids.push_back(grid);
+        visited.insert(grid);
+        while(!q.empty())
+        {
+            grid = q.front();
+            q.pop();
+            int row = grid/board[0].size(), col = grid%board[0].size();
+            if(row==0||row==board.size()-1||col==0||col==board[0].size()-1)
+                sign = false;
+            for(int i=0;i<4;i++)
+            {
+                int pos = dir[i][0]*board[0].size()+dir[i][1]+grid;
+                if(pos<0||pos>=board[0].size()*board.size()) continue;  //这个判断貌似有问题。
+                if(board[pos/board[0].size()][pos%board[0].size()]=='O'&&  
+                    visited.find(pos)==visited.end())
+                    {
+                        grids.push_back(pos);
+                        visited.insert(pos);
+                        q.push(pos);
+                    }
+            }
+        }
+        return sign;
+    }
+    void solve(vector<vector<char>> &board) {
+        if(board.size()==0) return;
+        set<int> visited;
+        for(int i=0;i<board.size();i++)
+            for(int j=0;j<board[0].size();j++)
+            {
+                vector<int> grids;
+                if(board[i][j]=='O'&&visited.find(i*board[0].size()+j)==visited.end())
+                {
+                    if(isSurrounded(board,visited,i*board[0].size()+j,grids))
+                    {
+                        for(vector<int>::iterator ite=grids.begin();ite!=grids.end();ite++)
+                            board[(*ite)/board[0].size()][(*ite)%board[0].size()] = 'X';
+                    }
+                }
+            }
+    }
+};
+
+class Solution {
+    bool check(int i, int j, vector<vector<char>>& board){
+      return i > 0 && i < board.size()-1 && 
+        j > 0 && j < board[0].size()-1;
+    }
+    bool InRegion(vector<vector<char>>& board, int i, int j){
+      return i >= 0 && i < board.size() &&
+        j >= 0 && j < board[0].size();
+    }
+    bool GetRegion(vector<vector<char>>& board, int col, 
+      int row, set<int>& s, vector<int>& grids){
+      int dir[4][2] = {{1,0}, {0,1}, {0,-1}, {-1,0}};
+      bool flag = check(col, row, board);
+      queue<int> q;
+      q.push(ToInt(col, row, board.size()));
+      while(!q.empty()){
+        col = q.front() / board[0].size();
+        row = q.front() % board[0].size();
+        q.pop();
+        for(int i = 0; i < 4; ++i){
+          int new_col = col + dir[i][0], new_row = row + dir[i][1];
+          if( InRegion(board, new_col, new_row) && 
+            s.find(ToInt(new_col, new_row, board[0].size())) == s.end() &&
+            board[new_col][new_row] == 'O'){
+            grids.push_back(ToInt(new_col, new_row, board[0].size()));
+            s.insert(ToInt(new_col, new_row, board[0].size()));
+          flag = flag && check(new_col, new_row, board);
+          q.push(ToInt(new_col, new_row, board.size()));
+          }
+        }
+      }
+      return flag;
+    }
+    int ToInt(int i,int j,int wid){
+      return i * wid + j;
+    }
+public:
+    void solve(vector<vector<char>> &board) {
+      int hei = board.size();
+      if( hei == 0 ) return;
+      int wid = board[0].size();
+      set<int> s;
+      for(int i = 0; i < hei; ++i){
+        for(int j = 0; j < wid; ++j){
+          if(board[i][j] == 'O' && s.find(ToInt(i,j,wid))==s.end()){
+            vector<int> grids;
+            s.insert(ToInt(i,j,wid));
+            grids.push_back(ToInt(i,j,wid));
+            if(GetRegion(board, i, j, s, grids)){
+              for(int k = 0; k < grids.size(); ++k)
+                board[grids[k]/wid][grids[k]%wid] = 'X';
+            }
+          }
+        }
+      }
+    }
+};

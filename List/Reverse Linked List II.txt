@@ -1,0 +1,21 @@
+class Solution {
+public:
+    ListNode *reverseBetween(ListNode *head, int m, int n) {
+        ListNode* dummy = new ListNode(1),*ite = dummy,*tail;
+        dummy->next = head;
+        for(int i=1;i<m;i++)
+          ite=ite->next;
+        head = ite;
+        tail = ite->next;
+        //先断开，再连接，顺序很重要,第m个不用管
+        for(int i=0;i<n-m;i++){
+            ite = tail->next;
+            tail->next = ite->next;
+            ite->next = head->next;
+            head->next = ite;
+        }
+        head = dummy->next;
+        delete dummy;
+        return head;
+    }
+};

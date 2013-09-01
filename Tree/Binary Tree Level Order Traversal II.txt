@@ -1,0 +1,20 @@
+
+class Solution {
+public:
+    void RecBottom(TreeNode* root,vector<vector<int>>& result,int level){
+        if(!root) return;
+        result[result.size()-1-level].push_back(root->val);
+        RecBottom(root->left,result,level+1);
+        RecBottom(root->right,result,level+1);
+    }
+    int MaxHeight(TreeNode* root,int d){
+        if(!root) return d;
+        return max(MaxHeight(root->left,d+1),MaxHeight(root->right,d+1));
+    }
+    vector<vector<int> > levelOrderBottom(TreeNode *root) {
+        int height = MaxHeight(root,0);
+        vector<vector<int>> result(height);
+        RecBottom(root,result,0);
+        return result;
+    }
+};

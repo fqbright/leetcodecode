@@ -1,0 +1,19 @@
+//RecFla返回flatten之后的tail，由于是前序遍历，flatteen之后的head跟root一致
+class Solution {
+    TreeNode* RecFla(TreeNode* root){
+      TreeNode* tmp = root->right,*r=root;
+      if(root->left){
+        root->right = root->left;
+        r = RecFla(root->left);
+        r->right = tmp;
+        root->left = NULL;
+      }
+      if(tmp) r = RecFla(tmp);
+      return r;
+    }
+public:
+    void flatten(TreeNode *root) {
+       if(!root) return;
+       RecFla(root);
+    }
+};

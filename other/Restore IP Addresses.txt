@@ -1,0 +1,79 @@
+class Solution {
+public:
+    bool isValid(string& str,int s,int e)
+    {
+        int ans = 0;
+        for(int i=s;i<e;i++)
+            ans = ans*10+str[i]-'0';
+        if(ans==0&&e-s==1) return true;
+        if(ans>0&&ans<=255&&str[s]!='0') return true;
+        return false;
+    }
+    vector<string> restoreIpAddresses(string s) {
+        int len = s.length();
+        vector<string> ans;
+        for(int i=1;i<len;i++)
+        {
+            if(!isValid(s,0,i)) continue;
+            for(int j=i+1;j<i+4&&j<len;j++)
+            {
+                if(!isValid(s,i,j)) continue;
+                for(int k=j+1;k<j+4&&k<len;k++)
+                {
+                    if(!isValid(s,j,k)||!isValid(s,k,len)) continue;
+                    ans.push_back(s.substr(0,i)+"."+s.substr(i,j-i)+"."
+                        +s.substr(j,k-j)+"."+s.substr(k,len-k));
+                }
+            }
+        }
+        return ans;
+    }
+};
+
+
+//递归版，目测比迭代复杂不少
+class Solution {
+    string s;
+    bool check(string s){
+      if(s.empty()||s.length()>3) return false;
+      if(s[0]=='0'){
+        if(s.length()==1)
+          return true;
+        return false;
+      }
+      int num = 0;
+      for(int i=0;i<s.length();i++){
+        num = num*10 + s[i]-'0';
+      }
+      return num<=255;
+    }
+    void RecRestore(vector<int>& dots,vector<string>& r){
+      if(dots.size()==4){
+        string tmp_s = s.substr(dots.back());
+        if(check(tmp_s)){
+          string ans;
+          for(int i=0;i<3;i++)
+            ans += s.substr(dots[i],dots[i+1]-dots[i]) + string(".");
+          ans += s.substr(dots.back());
+          r.push_back(ans);
+        }
+        return;
+      }
+      for(int i=dots.back()+1;i<s.length() && i-dots.back() < 4;i++){
+        string tmp_s = s.substr(dots.back(),i-dots.back());
+        if(check(tmp_s)){
+          dots.push_back(i);
+          RecRestore(dots,r);
+          dots.pop_back();
+        }
+      }
+    }
+public:
+    vector<string> restoreIpAddresses(string s) {
+      this->s = s;
+      vector<string> r;
+      vector<int> dots(1,0);
+      RecRestore(dots,r);
+      return r;
+    }
+};

@@ -1,0 +1,38 @@
+//L中每个元素长度为len，S长度为n的话，复杂度O(n*len),方法是把S分开len部分用两个指针遍历
+//比最暴力的方法好，最暴力的方法把S从头到尾跟L的元素匹配，复杂度O(n*len*L.size)
+class Solution {
+public:
+    void GenTarMap(vector<string>& L,map<string,int>& l_map){
+      for(int i=0;i<L.size();i++)
+        if(l_map.find(L[i])!=l_map.end())
+          l_map[L[i]]++;
+        else l_map[L[i]] = 1;
+    }
+    vector<int> findSubstring(string S, vector<string> &L) {
+      vector<int> result;
+      int word_len = L[0].length(),word_num=L.size(),len = word_num*word_len;
+      map<string,int> l_map;
+      GenTarMap(L,l_map);
+      for(int i=0;i<word_len;i++){  //写成三重循环，不影响实际复杂度
+        for(int j=i;j<=(int)S.length()-len;j+=word_len){ //枚举起始位置
+          int k=j;
+          map<string,int> m;
+          for(;k<S.length()&&k-j<len;k+=word_len){ //处理长度为len的substr，当出现不匹配时跳出
+            string sub_str = S.substr(k,word_len);
+            int num=0;
+            if(l_map.find(sub_str)!=l_map.end()){
+              if(m.find(sub_str)==m.end())
+                m[sub_str] = 1;
+              else num = ++m[sub_str];
+            }else
+              break;
+            if(num>l_map[sub_str])
+              break;
+          }
+          if(k-j==len)       //如果没有提前跳出，说明匹配成功
+              result.push_back(j);
+        }
+      }
+      return result;
+    }
+};

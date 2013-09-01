@@ -1,0 +1,50 @@
+class Solution {
+public:
+    bool check(vector<int>& num,int s,int e){
+        for(int i=s;i<e;i++)
+          if(num[i]==num[e])
+            return false;
+        return true;
+    }
+    void PerRec(vector<vector<int>>& result,vector<int>& num,int k){
+        if(k==num.size())
+          result.push_back(num);
+        else{
+          for(int i=k;i<num.size();i++){
+              if(!check(num,k,i)) continue;
+              std::swap(num[k],num[i]);
+              PerRec(result,num,k+1);
+              std::swap(num[k],num[i]);
+          }
+        }
+    }
+    vector<vector<int> > permuteUnique(vector<int> &num) {
+        vector<vector<int>> result;
+        PerRec(result,num,0);
+        return result;
+    }
+};
+
+//加速了check，用一个unorder_set来记录
+class Solution {
+public:
+    void PerRec(vector<vector<int>>& result,vector<int>& num,int k){
+        if(k==num.size())
+          result.push_back(num);
+        else{
+          unordered_set<int> s;
+          for(int i=k;i<num.size();i++){
+              if(s.find(num[i])!=s.end()) continue;
+              std::swap(num[k],num[i]);
+              PerRec(result,num,k+1);
+              std::swap(num[k],num[i]);
+              s.insert(num[i]);
+          }
+        }
+    }
+    vector<vector<int> > permuteUnique(vector<int> &num) {
+        vector<vector<int>> result;
+        PerRec(result,num,0);
+        return result;
+    }
+};

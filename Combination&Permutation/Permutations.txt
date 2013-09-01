@@ -1,0 +1,19 @@
+class Solution {
+public:
+    void PerRec(vector<vector<int>>& result,vector<int>& num,int k){
+        if(k==num.size())
+          result.push_back(num);
+        else{
+          for(int i=k;i<num.size();i++){
+              std::swap(num[k],num[i]);
+              PerRec(result,num,k+1);
+              std::swap(num[k],num[i]);
+          }
+        }
+    }
+    vector<vector<int> > permute(vector<int> &num) {
+        vector<vector<int>> result;
+        PerRec(result,num,0);
+        return result;
+    }
+};

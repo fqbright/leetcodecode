@@ -1,0 +1,24 @@
+class Solution {
+public:
+    string multiply(string num1, string num2) {
+      if(num1[0] == '0' || num2[0] == '0')
+        return "0";
+      int len1 = num1.length(), len2 = num2.length();
+      int len = len1 + len2;
+      vector<int> tmp_r(len,0);
+      string r(len,'0');
+      for(int i=0;i<len1;++i){
+        for(int j=0;j<len2;++j){
+          tmp_r[i+j+1] += (num1[i]-'0')*(num2[j]-'0');//这里用一个int存储是因为直接用string的char会溢出
+        }
+      }
+      for(int i=len-1;i>0;--i){
+        tmp_r[i-1] += tmp_r[i]/10;
+        tmp_r[i] %= 10;
+        r[i] += tmp_r[i];
+      }
+      r[0] += tmp_r[0];
+      if(r[0]=='0') return r.substr(1);
+      return r;
+    }
+};

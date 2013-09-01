@@ -1,0 +1,29 @@
+//主要分开四种情况考虑:0,[1,3],[4,8],9
+class Solution {
+public:
+    string intToRoman(int num) {
+      char m[3][3] = {{'I','V','X'},{'X','L','C'},{'C','D','M'}};
+      string s;
+      for(int i=0;i<3;i++,num/=10){
+        int n = num%10;
+        if(n==0) continue;
+        if(n<=3){
+          for(int j=0;j<n;j++)
+            s += m[i][0];
+        }else if(n<=8){
+            for(int j=5;j<n;j++)
+              s += m[i][0];
+            s += m[i][1];
+            if(n==4)
+              s += m[i][0];
+        }else{
+          s += m[i][2];
+          s += m[i][0];
+        }
+      }
+      for(int i=0;i<num;i++)
+        s += "M";
+      reverse(s.begin(),s.end());
+      return s;
+    }
+};

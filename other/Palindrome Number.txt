@@ -1,0 +1,19 @@
+//思路：扔掉个位。把扔掉个位的x翻转，然后跟原来的x从最低位开始比较
+class Solution {
+public:
+    bool isPalindrome(int x) {
+      if(x<0) return false;
+      int r=0, tmp = x/10;
+      while(tmp){
+        r = r*10 + tmp%10;
+        tmp /= 10;
+      }
+      while(r){
+        if(r%10 != x%10)
+          return false;
+        r /= 10;
+        x /= 10;
+      }
+      return true;
+    }
+};

@@ -1,0 +1,27 @@
+class Solution {
+public:
+    string simplifyPath(string path) {
+      int p = 0;
+      path += "/";
+      vector<string> vec;
+      for(int i=1;i<path.length();i++){
+        if(path[i]=='/'){
+          string tmp_s = path.substr(p+1,i-p-1);
+          if(tmp_s==string("..")){
+            if(!vec.empty())
+              vec.pop_back();
+          }
+          else if(tmp_s==string(".")||tmp_s.empty())
+            ;
+          else
+            vec.push_back(tmp_s);
+          p = i;
+        }
+      }
+      string r;
+      for(int i=0;i<vec.size();i++){
+        r += string("/")+vec[i];
+      }
+      return r.empty()?"/":r;
+    }
+};

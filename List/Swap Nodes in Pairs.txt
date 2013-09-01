@@ -1,0 +1,33 @@
+class Solution {
+public:
+    ListNode *swapPairs(ListNode *head) {
+        ListNode** ite = &head;
+        while(*ite&&(*ite)->next){ //调换两个节点的步骤
+            ListNode* tmp = (*ite)->next; //记住后一个节点节点
+            (*ite)->next = tmp->next;  //改变前一个节点的next
+            tmp->next = *ite;          //改变后一个节点的next
+            *ite = tmp;                //改变前驱的next
+            ite = &((*ite)->next->next); //ite往后走
+        }
+        return head;
+    }
+};
+
+//用dummy head
+class Solution {
+public:
+    ListNode *swapPairs(ListNode *head) {
+        ListNode* dummy = new ListNode(0),*ite=dummy;
+        dummy->next = head;
+        while(ite->next&&ite->next->next){
+            ListNode* tmp = ite->next->next;//保存要拿走的节点
+            ite->next->next = tmp->next;  //删除该节点
+            tmp->next = ite->next;  //把该节点接到ite后面
+            ite->next = tmp;
+            ite = tmp->next;
+        }
+        ite = dummy->next;
+        delete dummy;
+        return ite;
+    }
+};

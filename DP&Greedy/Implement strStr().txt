@@ -1,0 +1,62 @@
+//KMP±ê×¼Ä£°æ
+class Solution {
+public:
+    char *strStr(char *haystack, char *needle) {
+        char* s = haystack,*t=needle;
+        if(s==NULL||t==NULL) return NULL;
+        if(t[0]==0) return s;
+        int lens = strlen(s),lent = strlen(t);
+        vector<int> next;
+        next.push_back(-1);
+        for(int i=0,j=next[i];t[i]!=0;i++)
+        {
+            while(j>=0&&t[j]!=t[i]) 
+                j = next[j];
+            next.push_back(++j);
+        }
+        for(int i=0,j=0;s[i]!=0;)
+        {
+            while(j>=0&&s[i]!=t[j]) j = next[j];
+            i++;j++;
+            if(t[j]==0)
+                return &s[i-lent];
+        }
+        return NULL;
+    }
+};
+
+class Solution {
+public:
+    vector<int> GetNext(char* needle){
+        vector<int> next;
+        next.push_back(-1);
+        for(int i=0;needle[i];i++){
+            int tmp = next[i];
+            while(tmp!=-1&&needle[tmp]!=needle[i]){
+              tmp = next[tmp];
+            }
+            next.push_back(tmp+1);
+        }
+        return next;
+    }
+    char *Search(char* haystack,char* needle,vector<int>& next){
+        int len_needle = strlen(needle);
+        int pos = 0;
+        while(*haystack){
+            if(pos==-1||*haystack==needle[pos]){
+                haystack++;
+                pos++;
+            }else{
+                pos = next[pos];
+            }
+            if(pos==len_needle)
+                return haystack-pos;
+        }
+        return NULL;
+    }
+    char *strStr(char *haystack, char *needle) {
+        if(!*needle) return haystack;
+        vector<int> next=GetNext(needle);
+        return Search(haystack,needle,next);
+    }
+};

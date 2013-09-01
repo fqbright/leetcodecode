@@ -1,0 +1,31 @@
+class Solution {
+public:
+    int Next(int now,const vector<int>& num,int step){
+        while(now+step>=0&&now+step<num.size()&&num[now]==num[now+step])
+          now += step;
+        return now+step;
+    }
+    vector<vector<int> > threeSum(vector<int> &num) {
+        sort(num.begin(),num.end());
+        vector<vector<int>> result;
+        int i=0,size = num.size();
+        while(i<size-2){
+          int j=i+1,k=size-1;
+          while(j<k){
+            int sum = num[i]+num[j]+num[k];
+            if(sum==0){
+              result.push_back(vector<int>());
+              result.back().push_back(num[i]);
+              result.back().push_back(num[j]);
+              result.back().push_back(num[k]);
+            }
+            if(sum>=0)
+              k = Next(k,num,-1);
+            if(sum<=0)
+              j = Next(j,num,1);
+          }
+          i = Next(i,num,1);
+        }
+        return result;
+    }
+};

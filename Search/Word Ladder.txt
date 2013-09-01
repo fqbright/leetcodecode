@@ -1,0 +1,112 @@
+//预处理时把把所有字符串可以转化的串哈希到邻接表，复杂度为O(len*n*n)，大数据超时
+//map<string,vector<string>> adjList;
+class Solution {
+public:
+    int ladderLength(string start, string end, unordered_set<string> &dict) {
+      if(start == end) return 2;
+      set<string> visited;
+      int level_size = 1;
+      queue<string> q;
+      q.push(start);
+      visited.insert(start);
+      int result = 0;
+
+      while(!q.empty()){
+        string s = q.front();
+        q.pop();
+        --level_size;
+        for(int i = 0; i < s.length(); ++i){
+          string tmp_s = s;
+          for(char c = 'a'; c < 'z'; ++c){
+            tmp_s[i] = c;
+            if( s[i] != c){
+              if( tmp_s == end )
+                return result + 2;
+              if(dict.find(tmp_s) != dict.end() && 
+                visited.find(tmp_s) == visited.end()){
+                  visited.insert(tmp_s);
+                  q.push(tmp_s);
+                }
+            }
+          }
+        }
+        if(level_size == 0){
+          ++result;
+          level_size = q.size();
+        }
+      }
+      return 0;
+    }
+};
+
+//预处理时把每个字符串删除各个位置分别得到len个串做哈希，复杂度为O(len*len*n)可以通过
+//vector<map<string,vector<string>>> adjList;
+class Solution {
+public:
+    bool dist(const basic_string<char>& s1,const basic_string<char>& s2)
+    {
+        int cou = 0;
+        for(int i=0;i<s1.length();i++)
+            if(s1[i]!=s2[i]) 
+                cou++;
+        if(cou==1) return true;
+        return false;
+    }
+    int ladderLength(string start, string end, unordered_set<string> &dict) {
+        if(start==end)
+            return 1;
+        vector<map<string,vector<string>>> adjList;
+        for(int i=0;i<end.length();i++)
+            adjList.push_back(map<string,vector<string>>());
+        dict.insert(end);
+        unordered_set<string>::iterator ite = dict.begin();
+        while(ite!=dict.end())
+        {
+            vector<string> adj;
+            for(int i=0;i<ite->length();i++)
+            {
+                string tmp = ite->substr(0,i)+ite->substr(i+1);
+                if(adjList[i].find(tmp)==adjList[i].end())
+                {
+                    vector<string> c;
+                    adjList[i][tmp] = c;
+                }
+                adjList[i][tmp].push_back(*ite);
+            }
+            ite++;
+        }
+        int ans=2;
+        queue<string> q;
+        set<string> filter;
+        q.push(start);
+        filter.insert(start);
+        int cou = 0,num=1;
+        while(!q.empty())
+        {
+            string startNode = q.front();
+            q.pop();
+            for(int i=0;i<startNode.length();i++)
+            {
+                string tmpStr = startNode.substr(0,i)+startNode.substr(i+1);
+                vector<string> tmpVec = adjList[i][tmpStr];
+                for(int j=0;j<tmpVec.size();j++)
+                {
+                    if(filter.find(tmpVec[j])!=filter.end())
+                        continue;
+                    if(tmpVec[j]==end)
+                        return ans;
+                    q.push(tmpVec[j]);
+                    filter.insert(tmpVec[j]);
+                }
+            }
+            cou++;
+            if(cou==num)
+            {
+                ans++;
+                num = q.size();
+                cou=0;
+            }
+        }
+        return 0;
+    }
+};

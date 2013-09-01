@@ -1,0 +1,28 @@
+class Solution {
+public:
+    vector<int> grayCode(int n) {
+        vector<int> result;
+        result.push_back(0);
+        int p = 1;
+        for(int i=0;i<n;i++){
+            for(int j=result.size()-1;j>=0;j--)
+              result.push_back(result[j]+p);
+            p <<= 1;
+        }
+        return result;
+    }
+};
+
+//格雷码有直接生成第n个的公式
+return n^n>>1;
+
+class Solution {
+public:
+    vector<int> grayCode(int n) {
+        vector<int> result;
+        int size = (int)pow(2,n);
+        for(int i=0;i<size;i++)
+          result.push_back(i^i>>1);
+        return result;
+    }
+};

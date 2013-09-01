@@ -1,0 +1,13 @@
+class Solution {
+public:
+    int maxProfit(vector<int> &prices) {
+        if(prices.empty()) return 0;
+        int hold_stock = -prices[0],hold_no_stock=0;
+        for(int i=1;i<prices.size();i++){
+            int tmp_hold = hold_stock,tmp_no = hold_no_stock;
+            hold_stock = max(tmp_hold,tmp_no-prices[i]);
+            hold_no_stock = max(tmp_no,tmp_hold+prices[i]);
+        }
+        return hold_no_stock;
+    }
+};

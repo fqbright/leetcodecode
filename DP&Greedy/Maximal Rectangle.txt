@@ -1,0 +1,41 @@
+//O(nm)Ê±¼ä+O(m)¿Õ¼ä
+class Solution {
+    int largestRectangleArea(vector<int> &height) {
+        stack<int> stk;
+        int max_area=0;
+        for(int i=0;i<=height.size();){
+            if(stk.empty()){
+              stk.push(i++);
+            }else{
+              int t = stk.top();
+              if(i!=height.size()&&height[t]<=height[i]){
+                  stk.push(i++);
+              }else{
+                  stk.pop();
+                  if(stk.empty()){
+                      max_area = max(max_area,height[t]*i);
+                  }else{
+                      max_area = max(max_area,height[t]*(i-stk.top()-1));
+                  }
+              }
+            }
+        }
+        return max_area;
+    }
+public:
+    int maximalRectangle(vector<vector<char> > &matrix) {
+        if(matrix.empty()||matrix[0].empty()) return 0;
+        int max_rec = 0;
+        vector<int> integral_mat(matrix[0].size());
+        for(int i=0;i<matrix.size();i++){
+            for(int j=0;j<matrix[i].size();j++){
+                if(i==0||matrix[i-1][j]=='0'||matrix[i][j]=='0')
+                  integral_mat[j] = matrix[i][j]-'0';
+                else 
+                  integral_mat[j]++;
+            }
+            max_rec = max(max_rec,largestRectangleArea(integral_mat));
+        }
+        return max_rec;
+    }
+};

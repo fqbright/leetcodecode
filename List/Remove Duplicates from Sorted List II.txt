@@ -1,0 +1,25 @@
+// 用一个额外的sign来记录是不是已经出现过这个value
+class Solution {
+public:
+    ListNode *deleteDuplicates(ListNode *head) {
+        ListNode* dummy = new ListNode(1);
+        dummy->next = head;
+        bool sign = false;
+        ListNode* pre = dummy,*ite=head;
+        while(ite){
+            if(sign||(ite->next&&ite->next->val==ite->val)){
+                if(!ite->next||ite->next->val!=ite->val)
+                  sign =false;
+                else sign = true;
+                pre->next = ite->next;
+                delete ite;
+            }else{
+                pre=ite;
+            }
+            ite = pre->next;
+        }
+        head = dummy->next;
+        delete dummy;
+        return head;
+    }
+};

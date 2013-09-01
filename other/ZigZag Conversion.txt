@@ -1,0 +1,18 @@
+class Solution {
+public:
+    string convert(string s, int nRows) {
+      string r;
+      if(nRows == 1) return s;
+      for(int i=0;i<nRows;++i){
+        for(int j=i;j<s.length();j+=2*nRows-2){
+          r += s[j];
+          if(i!=0 && i!=nRows-1){  //头尾两行特判
+            int next = j + 2*nRows - 2 - 2*i;
+            if(next < s.length())
+              r += s[next];
+          }
+        }
+      }
+      return r;
+    }
+};

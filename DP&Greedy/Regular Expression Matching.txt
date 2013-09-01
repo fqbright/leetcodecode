@@ -1,0 +1,43 @@
+//暴力做法
+class Solution {
+public:
+    bool isMatch(const char *s, const char *p) {
+        if(!*p) return !*s;
+        if(!*s) return *(p+1)=='*'&&isMatch(s,p+2);
+        if(*(p+1)!='*')
+          return (*p=='.'||*s==*p)&&isMatch(s+1,p+1);
+        else{
+            while(*s&&(*s==*p||*p=='.')){
+              if(isMatch(s,p+2)) return true;
+              s++;
+            }
+        }
+        return isMatch(s,p+2);
+    }
+};
+//n*m的dp
+//还是用了一个一维的数组来维护dp的状态
+class Solution {
+public:
+    bool isMatch(const char *s, const char *p) {
+        int len_s = strlen(s);
+        vector<bool> can_match(len_s+1);
+        can_match[0] = true;
+        while(*p){
+          if(*(p+1)=='*'){ 
+            for(int i=0;i<len_s;i++){
+              if(s[i]==*p||*p=='.')
+                can_match[i+1] = can_match[i+1] || can_match[i];
+            }
+            p+=2;
+          }else{  //当不是"*"时，要倒过来更新
+            for(int i=len_s-1;i>=0;i--){
+              can_match[i+1] = (s[i]==*p||*p=='.')&&can_match[i];
+            }
+            can_match[0] = false;
+            p++;
+          }
+        }
+        return can_match[len_s];
+    }
+};

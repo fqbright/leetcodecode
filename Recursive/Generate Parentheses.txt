@@ -1,0 +1,48 @@
+class Solution {
+public:
+    void Gen(int left_n,string s,int n,vector<string>& result){
+      if(s.length()==2*n)
+        result.push_back(s);
+      if(left_n<n)
+        Gen(left_n+1,s+"(",n,result);
+      if(s.length()<2*left_n)
+        Gen(left_n,s+")",n,result);
+    }
+    vector<string> generateParenthesis(int n) {
+      vector<string> result;
+      Gen(0,string(),n,result);
+      return result;
+    }
+};
+
+//如果str的substr写成O(1)的话，会比上面的快
+class Solution {
+public:
+    void rec_gen(vector<string>& ans,int left,int right,int n,string& str)
+    {
+        if(left==n&&right==n)
+        {
+            ans.push_back(str);
+            return;
+        }
+        if(left<n)
+        {
+            str = str + "(";
+            rec_gen(ans,left+1,right,n,str);
+            str = str.substr(0,str.length()-1);
+        }
+        if(right<left)
+        {
+            str = str + ")";
+            rec_gen(ans,left,right+1,n,str);
+            str = str.substr(0,str.length()-1);
+        }
+    }
+    vector<string> generateParenthesis(int n) {
+        vector<string> ans;
+        if(n==0) return ans;
+        string s;
+        rec_gen(ans,0,0,n,s);
+        return ans;
+    }
+};

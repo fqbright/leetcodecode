@@ -1,0 +1,19 @@
+class Solution {
+public:
+    int longestValidParentheses(string s) {
+        stack<int> stk;
+        for(int i=0;i<s.length();i++){
+          if(stk.empty()||s[stk.top()]==')'||s[i]=='(')
+            stk.push(i);
+          else stk.pop();
+        }
+        int longest = 0,r = s.length();
+        while(!stk.empty()){
+          if(r-stk.top()-1>longest)
+            longest = r-stk.top()-1;
+          r = stk.top();
+          stk.pop();
+        }
+        return max(longest,r);
+    }
+};

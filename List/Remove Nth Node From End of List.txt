@@ -1,0 +1,40 @@
+class Solution {
+public:
+    ListNode *removeNthFromEnd(ListNode *head, int n) {
+        ListNode** ite = &head, *runner = head,*tmp;
+        while(n--&&runner)
+            runner = runner->next;
+        if(n+1) return head;
+        while(runner){
+            runner = runner->next;
+            ite = &((*ite)->next);
+        }
+        tmp = *ite;
+        (*ite) = (*ite)->next;
+        delete tmp;
+        return head;
+    }
+};
+
+//µİ¹é°æ
+class Solution {
+public:
+    int DelRecursive(ListNode* head,int n){
+        if(!head) return 0;
+        int k = DelRecursive(head->next,n);
+        if(n==k){
+            ListNode* tmp = head->next;
+            head->next = head->next->next;
+            delete tmp;
+        }
+        return k+1;
+    }
+    ListNode *removeNthFromEnd(ListNode *head, int n) {
+        ListNode* dummy = new ListNode(0);
+        dummy->next = head;
+        DelRecursive(dummy,n);
+        head = dummy->next;
+        delete dummy;
+        return head;
+    }
+};

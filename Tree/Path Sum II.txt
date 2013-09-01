@@ -1,0 +1,24 @@
+class Solution {
+    void RecPathSum(TreeNode* root,int sum,vector<vector<int>>& r,vector<int>& p){
+      p.push_back(root->val);
+      sum -= root->val;
+      if(!root->left && !root->right){
+        if(sum==0)
+          r.push_back(p);
+      }else{
+        if(root->left)
+          RecPathSum(root->left,sum,r,p);
+        if(root->right)
+          RecPathSum(root->right,sum,r,p);
+      }
+      p.pop_back();
+    }
+public:
+    vector<vector<int> > pathSum(TreeNode *root, int sum) {
+      vector<vector<int>> result;
+      if(!root) return result;
+      vector<int> path;
+      RecPathSum(root,sum,result,path);
+      return result;
+    }
+};

@@ -1,0 +1,23 @@
+//根据edit distance的递推式，更新dis[i][j]，只需要用到dis[i-1][j],dis[i][j-1]
+//dis[i-1][j-1].所以只要用一个数组做dp，如果从左到右更新，要更新dis[j]时，
+//dis[j-1]即为dis[i][j-1],dis[j]即为dis[i-1][j],pre即为dis[i-1][j-1]
+class Solution {
+public:
+    int minDistance(string word1, string word2) {
+        vector<int> dis(word2.length()+1);
+        for(int i=0;i<dis.size();i++)
+          dis[i] = i;
+        for(int i=0;i<word1.length();i++){
+            int pre=dis[0];  //记录dis[i][j]的左上角的值
+            dis[0] = i+1;
+            for(int j=1;j<=word2.length();j++){
+                int tmp = dis[j];  //变化前的dis[j]
+                if(word2[j-1]!=word1[i]){
+                  dis[j] = min(pre,min(dis[j-1],dis[j]))+1;
+                }else dis[j] = pre;
+                pre = tmp;  //保存到pre,pre相当于保存了dis[i-1][j-1]
+            }
+        }
+        return dis[word2.length()];
+    }
+};

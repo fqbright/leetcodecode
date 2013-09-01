@@ -1,0 +1,32 @@
+//用C(n,i-1)求C(n,i),用gcd避免溢出
+class Solution {
+    int GCD(int a,int b){
+      while(b){
+        int tmp = b;
+        b = a%b;
+        a = tmp;
+      }
+      return a;
+    }
+public:
+    vector<int> getRow(int rowIndex) {
+       vector<int> r(1,1);
+       for(int i=1;i<=rowIndex;i++){
+         int g = GCD(rowIndex-i+1,i);
+         int div = i/g, mul = (rowIndex-i+1)/g;
+         r.push_back(r.back()/div*mul);
+       }
+       return r;
+    }
+};
+//也可以用double解决溢出问题，不过不推荐这种答案
+class Solution {
+public:
+    vector<int> getRow(int rowIndex) {
+        vector<int> ans;
+        ans.push_back(1);
+        for(int i=1;i<=rowIndex;i++)
+            ans.push_back((int)((double)ans[i-1]*(rowIndex-i+1)/i));
+        return ans;
+    }
+};

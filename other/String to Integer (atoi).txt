@@ -1,0 +1,27 @@
+class Solution {
+public:
+    int atoi(const char *str) {
+      if(!str) return 0;
+      while(*str == ' ')
+        ++str;
+      int sign = 1;
+      if(*str == '+' || *str == '-'){
+        if(*str == '-')
+          sign = -1;
+        ++str;
+      }
+      int r = 0;
+      while(*str){
+        if(*str < '0' || *str > '9')
+          return r;
+        int num = *str - '0';
+        if(sign == 1 && (INT_MAX - num) / 10 < r)
+          return INT_MAX;
+        if(sign == -1 && (INT_MIN + num) / 10 > r)
+          return INT_MIN;
+        r = 10 * r + sign * num;
+        ++str;
+      }
+      return r;
+    }
+};

@@ -1,0 +1,18 @@
+class Solution {
+public:
+    int numDecodings(string s) {
+        int f1=1,f2=1;
+        if(s.empty() || s[0]=='0') return 0; //这个特判注意！
+        for(int i=1;i<s.length();i++){
+            int num = (s[i-1]-'0')*10+s[i]-'0';
+            int tmp = 0;
+            if(num>=10&&num<=26)
+              tmp += f2;
+            if(s[i]!='0')
+              tmp += f1;
+            f2 = tmp;
+            std::swap(f1,f2);
+        }
+        return f1;
+    }
+};

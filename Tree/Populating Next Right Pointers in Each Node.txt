@@ -1,0 +1,18 @@
+
+class Solution {
+public:
+    void connect(TreeLinkNode *root) {
+        while(root&&root->left){
+            TreeLinkNode* dummy = new TreeLinkNode(1),*head = dummy;
+            while(root){
+                dummy->next = root->left;
+                dummy = dummy->next;
+                dummy->next = root->right;
+                dummy = dummy->next;
+                root = root->next;
+            }
+            root = head->next;
+            delete head;
+        }
+    }
+};

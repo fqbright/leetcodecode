@@ -1,0 +1,25 @@
+class Solution {
+public:
+    ListNode *addTwoNumbers(ListNode *l1, ListNode *l2) {
+        if(!l1&&!l2) return new ListNode(0);
+        int carry=0;
+        ListNode* dummy = new ListNode(0),*ite = dummy;
+        while(l1||l2||carry){ //l1,l2,carry统一放到同一个while处理
+            int sum = carry;
+            if(l1){
+              sum += l1->val;
+              l1 = l1->next;
+            }
+            if(l2){
+              sum += l2->val;
+              l2 = l2->next;
+            }
+            ite->next = new ListNode(sum%10);
+            ite = ite->next;
+            carry = sum/10;
+        }
+        ite = dummy->next;
+        delete dummy;
+        return ite;
+    }
+};

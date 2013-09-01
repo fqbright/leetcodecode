@@ -1,0 +1,19 @@
+//复杂度还是O(n)。因为每次while循环都会把A[j]放到合适的位置，而一旦某个A[k]已经
+//在合适的位置，while循环就不会进入。所以数组里面的任意数字，最多会被swap两次
+//第一次从某个地方swap到A[j]，第二次从A[j]swap到合适的地方
+//想写的更明显的O(n)，可以把while改成if，然后如果进入了if的话,i--
+class Solution {
+public:
+    int firstMissingPositive(int A[], int n) {
+       for(int i=0;i<n;i++){
+         int j = i;
+         while(A[j]!=j+1 && A[j]>0 && A[j] <=n && A[j] != A[A[j]-1]){
+           std::swap(A[j],A[A[j]-1]);
+         }
+       }
+       for(int i=0;i<n;i++)
+         if(A[i]!=i+1)
+           return i+1;
+       return n+1;
+    }
+};

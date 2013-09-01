@@ -1,0 +1,32 @@
+//f[i][j]需要用f[i-1][j]和f[i][j-1]更新。
+//这个题由于f[0][j]不是等于0，所以需要用一个循环初始化第一行
+//另外由于f[i][1]不能从f[i][0]到达，而只能从f[i-1][1]到达，这也是个容易错的点
+class Solution {
+public:
+    int minPathSum(vector<vector<int> > &grid) {
+        if(grid.empty()) return 0;
+        vector<int> sum(grid[0].size()+1);
+        for(int i=0;i<grid[0].size();i++) //初始化一行
+          sum[i+1] = sum[i]+grid[0][i];
+        for(int i=1;i<grid.size();i++){ 
+            sum[0] = sum[1]; //因为不能从sum[0]开始，所以把sum[0]设置成跟sum[1]相等
+            for(int j=1;j<=grid[0].size();j++)
+                sum[j] = min(sum[j-1],sum[j])+grid[i][j-1];
+        }
+        return sum.back();
+    }
+};
+
+//leetcode讨论区的一种写法。区别在于初始化的方法：把vector初始化为最大值
+class Solution {
+public:
+    int minPathSum(vector<vector<int> > &grid) {
+        if(grid.empty()) return 0;
+        vector<int> sum(grid[0].size()+1,INT_MAX);
+        sum[1] = 0;
+        for(int i=0;i<grid.size();i++)
+            for(int j=1;j<=grid[0].size();j++)
+                sum[j] = min(sum[j-1],sum[j])+grid[i][j-1];
+        return sum.back();
+    }
+};

@@ -1,0 +1,77 @@
+//网上找的
+class Solution {
+ public:
+     bool isNumber(const char *s) {
+         // Start typing your C/C++ solution below
+         // DO NOT write int main() function
+         while (isspace(*s)) s++;
+         if (*s == '+' || *s == '-') s++;
+         bool space, e, dot, first, second;
+         space = e = dot = first = second = false;
+         while (*s != '\0') {
+             if (*s == '.') {
+                 if (e || space || dot || second) return false;
+                 dot = true;
+             }
+             else if (*s == 'e') {
+                 if (e || space || !first) return false;
+                 e = true;
+             }
+             else if (isdigit(*s)) {
+                 if (space) return false;
+                 if (!e) first = true;
+                 else second = true;
+             }
+             else if (isspace(*s)) space = true;
+             else if (*s == '+' || *s == '-') {
+                 if (space || *(s-1) != 'e') return false;
+             }
+             else return false;
+             s++;
+         }
+         if (!first) return false;
+         if (e && !second) return false;
+         return true;
+     }
+ };
+
+//我的代码，各种特判
+class Solution {
+public:
+    bool isNumber(const char *s) {
+      if(!s) return false;
+      while(*s && *s == ' ') ++s;
+      if(*s == '+' || *s == '-')
+        ++s;
+      if(!*s)
+        return false;  //全是空格或者正负号，没有数字，是错的
+      const char * start = s;
+      bool dot = false, e = false;
+      while(*s){
+        if(*s == '.'){
+          if(dot || e)
+            return false;   //出现'.'之前有'.'或者'e'都是错的
+          if(s == start && (*(s+1) < '0' || *(s+1) >'9'))
+            return false;   //出现'.'的前后都没有数字，是错的
+          dot = true;
+        }else if(*s == 'e'){
+          if(e || s == start)
+            return false;   //出现'e'前面有e'或者第一个字符就是'e'，都是错的
+          e = true;
+        }else if(*s == '+' || *s == '-'){
+          if(!e || *(s-1) != 'e')
+            return false;   //出现正负号，如果不是出现在一个'e'的后面，是错的
+        }else if(*s == ' '){
+          while(*s && *s == ' ')
+            s++;
+          if(!*s) return true;  //出现空格的话，后面只能一直空格，不然是错的
+          return false;
+        }else if(*s < '0' || *s > '9')
+          return false;      //出现非前面特殊字符，非数字字符，是错的
+        ++s;
+      }
+      if(e && *(s-1) == 'e')
+        return false;    //如果最后一个字符是'e'，是错的
+      return true;
+    }
+};

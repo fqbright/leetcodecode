@@ -1,0 +1,19 @@
+class Solution {
+public:
+    void nextPermutation(vector<int> &num) {
+        int fir_dec = (int)num.size()-2;
+        while(fir_dec>=0&&num[fir_dec]>=num[fir_dec+1])
+          fir_dec--;
+        if(fir_dec<0){
+          reverse(num.begin(),num.end());
+          return;
+        }
+        for(int i=(int)num.size()-1;i>=0;i--)
+          if(num[i]>num[fir_dec]){
+            std::swap(num[i],num[fir_dec]);
+            break;
+          }
+        for(int i=fir_dec+1,j=(int)num.size()-1;i<j;i++,j--)
+          std::swap(num[i],num[j]);
+    }
+};

@@ -1,0 +1,19 @@
+class Solution {
+public:
+    bool canJump(int A[], int n) {
+        int i=0,j=0;
+        while(i<n-1){
+            if(i+A[i]>=n-1)
+              return true;
+            if(A[i]==0) return false;
+            int best = i;
+            while(j<=i+A[i]){
+              if(best+A[best]<=j+A[j])
+                best = j;
+              j++;
+            }
+            i = best;
+        }
+        return true;
+    }
+};

@@ -1,0 +1,36 @@
+class Solution {
+public:
+    int numDistinct(string S, string T) {
+        vector<int> x(T.length()+1),y(T.length()+1);
+        for(int i=1;i<x.size();i++)
+          x[i] = 0;
+        x[0] = 1;
+        for(int i=0;i<S.length();i++){
+            y[0] = 1;
+            for(int j=1;j<=T.length();j++){
+                y[j] = x[j];
+                if(S[i]==T[j-1])
+                  y[j] += x[j-1];
+            }
+            x.swap(y);//这个据说是constant time的
+        }
+        return x[T.length()];
+    }
+};
+
+//leetcode讨论区代码修改而成，链接：http://discuss.leetcode.com/questions/281/distinct-subsequences
+//写出f(i,j)的表达式之后，发现f(i,j)总是等于f(i-1,j)或者等于f(i-1,j)+f(i-1,j-1)
+//这样的话，只用一个数组更新就好了。每次只要判断是不是需要加上f(i-1,j-1).由于
+//更新方向的问题，内重循环要倒过来做。代码相当简洁
+class Solution {
+public:
+    int numDistinct(string S, string T) {
+        vector<int> x(T.length()+1); //vector会初始化为0
+        x[0] = 1;
+        for(int i=0;i<S.length();i++){
+          for(int j=T.length();j>0;j--)
+            x[j] += (S[i]==T[j-1])*x[j-1];
+        }
+        return x[T.length()];
+    }
+};

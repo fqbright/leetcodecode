@@ -1,0 +1,17 @@
+class Solution {
+    map<int,int> m;
+    TreeNode* RecBuild(vector<int>& post,vector<int>& in,int s_p,int s_i,int size){
+      if(size<1) return NULL;
+      TreeNode* root = new TreeNode(post[s_p+size-1]);
+      int pos = m[post[s_p+size-1]];
+      root->left = RecBuild(post,in,s_p,s_i,pos-s_i);
+      root->right = RecBuild(post,in,s_p+pos-s_i,pos+1,size-pos+s_i-1);
+      return root;
+    }
+public:
+    TreeNode *buildTree(vector<int> &inorder, vector<int> &postorder) {
+       for(int i=0;i<inorder.size();i++)
+         m[inorder[i]] = i;
+       return RecBuild(postorder,inorder,0,0,inorder.size());
+    }
+};

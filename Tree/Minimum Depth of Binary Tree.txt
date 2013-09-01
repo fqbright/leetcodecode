@@ -1,0 +1,14 @@
+class Solution {
+public:
+    int minDepth(TreeNode *root) {
+      if(!root) return 0;
+      if(!root->left && !root->right)
+        return 1;
+      int min_dep = (unsigned)1<<31-1;
+      if(root->left)
+        min_dep = minDepth(root->left);
+      if(root->right)
+        min_dep = min(min_dep,minDepth(root->right));
+      return min_dep+1;
+    }
+};

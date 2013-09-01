@@ -1,0 +1,79 @@
+class Solution {
+public:
+    vector<int> inorderTraversal(TreeNode *root) {
+        vector<int> ans;
+        if(root==NULL) return ans;
+        stack<TreeNode*> s;
+        while(root!=NULL || !s.empty())
+        {
+            while(root!=NULL)
+            {
+                s.push(root);
+                root = root->left;
+            }
+            if(!s.empty())
+            {
+                root = s.top();
+                s.pop();
+                ans.push_back(root->val);
+                root = root->right;
+            }
+        }
+        return ans;
+    }
+};
+
+//普遍适用的方法
+class Solution {
+public:
+    struct Node{
+        TreeNode* node_;
+        bool sign;
+        Node(TreeNode* n){node_=n;sign=false;}
+    };
+    vector<int> inorderTraversal(TreeNode *root) {
+        stack<Node> stk;
+        stk.push(Node(root));
+        vector<int> result;
+        if(!root) return result;
+        while(!stk.empty()){
+            Node tmp = stk.top();
+            stk.top().sign = true;
+            if(tmp.sign){
+                result.push_back(tmp.node_->val);
+                stk.pop();
+                if(tmp.node_->right)
+                  stk.push(Node(tmp.node_->right));
+            }else if(tmp.node_->left)
+              stk.push(Node(tmp.node_->left));
+        }
+        return result;
+    }
+};
+
+//Morris travel, 无栈遍历二叉树
+class Solution {
+public:
+    vector<int> inorderTraversal(TreeNode *root){
+      vector<int> result;
+      while(root){
+        if(!root->left){
+          result.push_back(root->val);
+          root = root->right;
+        }else{
+          TreeNode* left = root->left;
+          while(left->right && left->right != root)
+            left = left->right;
+          if(!left->right){
+            left->right = root;
+            root = root->left;
+          }else{
+            result.push_back(root->val);
+            left->right = NULL;
+            root = root->right;
+          }
+        }
+      }
+      return result;
+    }
+};

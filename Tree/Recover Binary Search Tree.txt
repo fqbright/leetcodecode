@@ -1,0 +1,92 @@
+//用了额外空间的，把tree弄成数列后从两边找第一个无序的就是交换了的
+//时空复杂度:	O(n) + O(n)
+class Solution {
+public:
+    void recover(TreeNode* root,vector<TreeNode*>& vec)
+    {
+        if(root==NULL) return;
+        recover(root->left,vec);
+        vec.push_back(root);
+        recover(root->right,vec);
+    }
+    void recoverTree(TreeNode *root) {
+        vector<TreeNode*> vec;
+        recover(root,vec);
+        int i=0,j=vec.size()-1;
+        while(vec[i]->val<vec[i+1]->val) i++;
+        while(vec[j]->val>vec[j-1]->val) j--;
+        std::swap(vec[i]->val,vec[j]->val);
+    }
+};
+
+//不用额外空间，递归，找到相当于排成数列后第一个和最后一个无序的
+//时空复杂度:	O(nlogn) + O(1) （不算栈空间。。。）
+class Solution {
+public:
+    TreeNode* getNext(TreeNode* root,bool isLeft)
+    {
+        if(root==NULL)
+            return NULL;
+        if(isLeft) while(root->left!=NULL) root = root->left;
+        else while(root->right!=NULL) root = root->right;
+        return root;
+    }
+    TreeNode* pre(TreeNode* root,TreeNode* p)
+    {
+        if(root==NULL) return NULL;
+        TreeNode* tmp=NULL;
+        if(root->left!=NULL)
+            tmp = pre(root->left,root);
+        if(tmp!=NULL) return tmp;
+        tmp = getNext(root->right,true);
+        if(tmp!=NULL&&root->val>tmp->val)
+            return root;
+        if(tmp==NULL&&p!=NULL&&root->val>p->val)
+            return root;
+        return pre(root->right,p);
+    }
+    TreeNode* rev(TreeNode* root,TreeNode* p)
+    {
+        if(root==NULL) return NULL;
+        TreeNode* tmp=NULL;
+        if(root->right!=NULL)
+            tmp = rev(root->right,root);
+        if(tmp!=NULL) return tmp;
+        tmp = getNext(root->left,false);
+        if(tmp!=NULL&&root->val<tmp->val)
+            return root;
+        if(tmp==NULL&&p!=NULL&&root->val<p->val)
+            return root;
+        return rev(root->left,p);
+    }
+    void recoverTree(TreeNode *root) {
+        TreeNode* p1,*p2;
+        p1 = pre(root,NULL);
+        p2 = rev(root,NULL);
+        std::swap(p1->val,p2->val);
+    }
+};
+
+//最优解。O(n)+O(1)
+//中序遍历，利用pre来记录当前访问到的节点，每次出现变小，就把两个指针都记录下来
+//最后把最前面和最后面的指针内容调换(当相邻两个调换时，p只保存两个指针)
+class Solution {
+    void InOrder(TreeNode* root, vector<TreeNode*>& r,TreeNode*& pre){
+      if(!root)
+        return;
+      InOrder(root->left,r,pre);
+      if(pre && pre->val>root->val){
+        r.push_back(pre);
+        r.push_back(root);
+      }
+      pre = root;
+      InOrder(root->right,r,pre);
+    }
+public:
+    void recoverTree(TreeNode *root) {
+      vector<TreeNode*> to_swap;
+      TreeNode* tmp=NULL;
+      InOrder(root,to_swap,tmp);
+      std::swap(to_swap[0]->val,to_swap.back()->val);
+    }
+};

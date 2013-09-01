@@ -1,0 +1,66 @@
+//大数据超时了，估计要把string全部先转换成整数
+//代码相当麻烦
+class Solution {
+public:
+    vector<vector<string>> GenResult(map<string,vector<string>>& prevs,string& now,string& des){
+        vector<vector<string>> result;
+        if(now==des){
+            result.push_back(vector<string>(1,des));
+            return result;
+        }
+        vector<string> p_vec = prevs[now];
+        for(int i=0;i<p_vec.size();i++){
+            vector<vector<string>> tmp = GenResult(prevs,p_vec[i],des);
+            for(int j=0;j<tmp.size();j++){
+                tmp[j].push_back(now);
+                result.push_back(tmp[j]);
+            }
+        }
+        return result;
+    }
+    vector<vector<string>> findLadders(string start, string end, unordered_set<string> &dict) {
+        vector<vector<string>> result;
+        map<string,vector<string>> prevs;
+        if(dict.empty()) return result;
+        int len = dict.begin()->length();
+        vector<map<string,vector<string>>> adj(len);
+        for(auto ite = dict.begin();ite!=dict.end();ite++){
+            for(int i=0;i<len;i++){
+                string tmp = ite->substr(0,i)+ite->substr(i+1,len-i-1);
+                if(adj[i].find(tmp)==adj[i].end())
+                  adj[i][tmp] = vector<string>(1,*ite);
+                else adj[i][tmp].push_back(*ite);
+            }
+        }
+        set<string> visited;
+        queue<string> q;
+        map<string,int> min_steps;
+        q.push(start);
+        min_steps[start] = 0;
+        visited.insert(start);
+        while(!q.empty()){
+            string tmp = q.front();
+            if(min_steps.find(end)!=min_steps.end()&&min_steps[tmp]>=min_steps[end])
+              break;
+            q.pop();
+            for(int i=0;i<tmp.length();i++){
+                string substr = tmp.substr(0,i)+tmp.substr(i+1,len-i-1);
+                vector<string> vec = adj[i][substr];
+                for(int i=0;i<vec.size();i++){
+                    if(visited.find(vec[i])==visited.end()||min_steps[vec[i]]==min_steps[tmp]+1){
+                        if(visited.find(vec[i])==visited.end())
+                          q.push(vec[i]);
+                        visited.insert(vec[i]);
+                        min_steps[vec[i]] = min_steps[tmp]+1;
+                        if(prevs.find(vec[i])==prevs.end())
+                          prevs[vec[i]] = vector<string>(1,tmp);
+                        else prevs[vec[i]].push_back(tmp);
+                    }
+                }
+            }
+        }
+        if(min_steps.find(end)==min_steps.end()) return result;
+        result = GenResult(prevs,end,start);
+        return result;
+    }
+};

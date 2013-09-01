@@ -1,0 +1,17 @@
+class Solution {
+public:
+    int jump(int A[], int n) {
+        if(n<=1) return 0;
+        int p = 0,ans = 0,i=1;
+        while(p<n){
+            int best_choice = p;
+            if(p+A[p]>=n-1)
+              return ans+1;
+            for(;i<=p+A[p];i++)//i每次停留在最后的位置，保证了复杂度是O(n)
+              if(A[i]+i>A[best_choice]+best_choice)
+                best_choice = i;
+            p = best_choice;
+            ans++;
+        }
+    }
+};

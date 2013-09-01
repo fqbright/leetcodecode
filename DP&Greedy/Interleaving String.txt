@@ -1,0 +1,23 @@
+//复杂度O(len1*len2)
+//dp[i][j]表示s1的前i个和s2的前j个能不能匹配到s3的前i+j个
+
+class Solution {
+public:
+    bool isInterleave(string s1, string s2, string s3) {
+        if(s3.length()!=s1.length()+s2.length()) return false;
+        vector<bool> can_inter(s1.length()+1);
+        can_inter[0] = true;
+        for(int i=1;i<=s1.length();i++)
+          can_inter[i] = s1[i-1]==s3[i-1]&&can_inter[i-1];
+        for(int i=0;i<s2.length();i++){
+            can_inter[0] = can_inter[0]&&s2[i]==s3[i];
+            for(int j=1;j<=s1.length();j++){
+                if((s1[j-1]==s3[i+j]&&can_inter[j-1])||
+                  (s2[i]==s3[i+j]&&can_inter[j]))
+                  can_inter[j] = true;
+                else can_inter[j] = false;
+            }
+        }
+        return can_inter[s1.length()];
+    }
+};

@@ -1,0 +1,25 @@
+class Solution {
+private:
+    vector<vector<int>> result;
+    vector<int> path;
+    int tar;
+public:
+    void ComSumRec(vector<int>& c,int p,int lack){
+        if(lack==0) result.push_back(path);
+        for(int i=p;i<c.size();i++){
+            if(lack>=c[i]){
+                path.push_back(c[i]);
+                ComSumRec(c,i,lack-c[i]);
+                path.pop_back();
+            }
+        }
+    }
+    vector<vector<int> > combinationSum(vector<int> &candidates, int target) {
+        result.clear();
+        path.clear();
+        tar = target;
+        sort(candidates.begin(),candidates.end());
+        ComSumRec(candidates,0,tar);
+        return result;
+    }
+};

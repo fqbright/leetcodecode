@@ -1,0 +1,43 @@
+class Solution {
+public:
+    int maxProfit(vector<int> &prices) {
+        vector<int> forward(prices.size());
+        if(prices.empty()) return 0;
+        int min_val = prices[0];
+        forward[0] = 0;
+        for(int i=1;i<prices.size();i++){
+            forward[i] = max(forward[i-1],prices[i]-min_val);
+            min_val = min(min_val,prices[i]);
+        }
+        int max_pro = 0,max_val = prices.back(),result=forward.back();
+        for(int i=(int)prices.size()-2;i>0;i--){
+            max_pro = max(max_pro,max_val-prices[i]);
+            max_val = max(max_val,prices[i]);
+            result = max(result,max_pro+forward[i-1]);
+        }
+        return result;
+    }
+};
+
+//leetcode讨论区看到的思路：O(n)+O(1)的。比我上面O(n)+O(n)的好，代码也简单。
+具体链接在这里：http://discuss.leetcode.com/questions/287/best-time-to-buy-and-sell-stock-iii
+大概思路是用diff[i] = prices[i+1]-prices[i]。这样的话，prices[i]-prices[j]
+其实就相当于diff[j]+diff[j+1]+...diff[i-1]，也就是子段和，题目就转化成最大
+两子段和的问题（maximum m segments sum problem）。diff不需要显式的求出来。
+//f[i][j]表示取上dfff[i]，分成j段，最大子段和
+//g[i][j]表示f[i][j],f[i-1][j],....,f[0][j]的最大值，为了更新f[i][j]用。
+class Solution {
+public:
+    int maxProfit(vector<int> &prices) {
+        int f[3] = {0},g[3]={0};
+        int n = prices.size()-1;
+        for(int i=0;i<n;i++){
+            int diff = prices[i+1]-prices[i];
+            for(int j=2;j>0;j--){
+                f[j] = max(f[j],g[j-1])+diff;
+                g[j] = max(g[j],f[j]);
+            }
+        }
+        return max(g[1],g[2]);
+    }
+};

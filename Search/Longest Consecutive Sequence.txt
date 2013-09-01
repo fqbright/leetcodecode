@@ -1,0 +1,27 @@
+class Solution {
+    int GetConsecutive(set<int>& s,int num, int step){
+      int len = 0;
+      while(s.find(num+step) != s.end()){
+        ++len;
+        num += step;
+        s.erase(num);
+      }
+      return len;
+    }
+public:
+    int longestConsecutive(vector<int> &num) {
+      set<int> s;
+      for(int i = 0; i < num.size(); ++i)
+        s.insert(num[i]);
+      int max_len = 0;
+      for(int i = 0; i < num.size(); ++i){
+        if(s.find(num[i]) != s.end()){
+          int len = 1;
+          s.erase(num[i]);
+          len += GetConsecutive(s,num[i],1) + GetConsecutive(s,num[i],-1);
+          max_len = max(len, max_len);
+        }
+      }
+      return max_len;
+    }
+};

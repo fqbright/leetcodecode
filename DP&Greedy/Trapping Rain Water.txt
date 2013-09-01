@@ -1,0 +1,22 @@
+//O(n)+O(1)。具体来说，扫描了数组两遍
+class Solution {
+public:
+    int trap(int A[], int n) {
+        int max_index = 0,result=0;
+        for(int i=1;i<n;i++)
+          if(A[max_index]<A[i])
+            max_index = i;
+        int l_edge = 0,r_edge=n-1;
+        for(int i=1;i<max_index;i++){
+            if(A[l_edge]<A[i])
+              l_edge = i;
+            else result += A[l_edge]-A[i];
+        }
+        for(int i=n-2;i>max_index;i--){
+            if(A[r_edge]<A[i])
+              r_edge = i;
+            else result += A[r_edge]-A[i];
+        }
+        return result;
+    }
+};

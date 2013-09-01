@@ -1,0 +1,52 @@
+//线性查找就好了
+class Solution {
+public:
+    vector<Interval> insert(vector<Interval> &intervals, Interval newInterval) {
+        vector<Interval> result;
+        int ite=0,n=intervals.size();
+        while(ite<n&&intervals[ite].end<newInterval.start)
+          result.push_back(intervals[ite++]);
+        while(ite<n&&intervals[ite].start<=newInterval.end){
+          newInterval.start = min(newInterval.start,intervals[ite].start);
+          newInterval.end = max(newInterval.end,intervals[ite].end);
+          ite++;
+        }
+        result.push_back(newInterval);
+        while(ite<n)
+          result.push_back(intervals[ite++]);
+        return result;
+    }
+};
+
+//直接一个个interval更新
+class Solution {
+public:
+    vector<Interval> insert(vector<Interval> &intervals, Interval newInterval) {
+        vector<Interval> ans;
+        bool s = false;
+        for(int i=0;i<intervals.size();i++)
+        {
+            if(intervals[i].end<newInterval.start)
+                ans.push_back(intervals[i]);
+            else
+            {
+                if(!s)
+                {
+                    newInterval.start = min(newInterval.start,intervals[i].start);
+                    if(intervals[i].start<=newInterval.end)
+                        newInterval.end = max(newInterval.end,intervals[i].end);
+                    else
+                    {
+                        s = true;
+                        ans.push_back(newInterval);
+                        ans.push_back(intervals[i]);
+                    }
+                }
+                else ans.push_back(intervals[i]);
+            }
+        }
+        if(!s)
+            ans.push_back(newInterval);
+        return ans;
+    }
+};

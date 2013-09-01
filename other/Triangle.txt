@@ -1,0 +1,30 @@
+class Solution {
+public:
+    int minimumTotal(vector<vector<int> > &triangle) {
+      int size = triangle.size(),min_sum;
+      vector<int> r(size,0);
+      for(int i=0;i<size;i++){
+        for(int j=i;j>0;j--){
+          min_sum = r[j-1];
+          if(j<i && min_sum > r[j])
+            min_sum = r[j];
+          r[j] = min_sum + triangle[i][j];
+        }
+        r[0] += triangle[i][0];
+      }
+      min_sum = r[0];
+      for(int i=1;i<size;i++)
+        min_sum = min(min_sum,r[i]);
+      return min_sum;
+    }
+};
+
+//better solution. bottom up
+int minimumTriangle(vector<vector<int> > &t) {
+    int n = t.size();
+    vector<int> p (n+1, 0);
+    while(n-- > 0)
+        for(int i = 0; i <= n; ++i) 
+            p[i] = t[n][i] + ((p[i] < p[i+1])? p[i] : p[i+1]);
+    return p[0];
+}

@@ -1,0 +1,19 @@
+class Solution {
+    static bool cmp(Interval a,Interval b){//要定义成static
+      return a.end < b.end;
+    }
+public:
+    vector<Interval> merge(vector<Interval> &intervals) {
+      sort(intervals.begin(),intervals.end(),cmp);
+      vector<Interval> r;
+      for(int i=0;i<intervals.size();){
+        if(!r.empty() && intervals[i].start <= r.back().end){
+          intervals[i].start = min(intervals[i].start,r.back().start);
+          r.pop_back();
+        }else{
+          r.push_back(intervals[i++]);
+        }
+      }
+      return r;
+    }
+};

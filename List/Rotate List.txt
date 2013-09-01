@@ -1,0 +1,20 @@
+class Solution {
+public:
+    ListNode *rotateRight(ListNode *head, int k) {
+      if(!head) return head;
+      ListNode* tail = head;
+      int num = 1;
+      while(tail->next){ //计算链表大小和找到尾节点
+        num++;
+        tail=tail->next;
+      }
+      k = num - (k%num) - 1; //计算rotate后head的前一个节点
+      tail->next = head;   //做成环
+      while(k--)            //找到head的前一个
+        head=head->next; 
+      tail = head;        //断开
+      head = head->next;
+      tail->next = NULL;
+      return head;
+    }
+};

@@ -1,0 +1,87 @@
+class Solution {
+public:
+    string minWindow(string S, string T) {
+        int contain_num = 0,st=0,end=0,min_len=S.length()+1,start_index=-1;
+        map<char,int> set_of_T;
+        map<char,int> window_map;
+        for(int i=0;i<T.length();i++){
+          if(set_of_T.find(T[i])!=set_of_T.end())
+            set_of_T[T[i]]++;
+          else set_of_T[T[i]] = 1;
+          window_map[T[i]] = 0; //把第二个map也初始化了
+        }
+        while(st<S.length()){
+            if(contain_num==set_of_T.size()){
+                if(min_len>end-st){
+                    start_index = st;
+                    min_len = end-st;
+                }
+                if(set_of_T.find(S[st])!=set_of_T.end()){
+                    window_map[S[st]]--;
+                    if(window_map[S[st]]==set_of_T[S[st]]-1){
+                      contain_num--;
+                    }
+                }
+                st++;
+            }else{
+                if(end==S.length()) break; //这种中间break不好
+                if(set_of_T.find(S[end])!=set_of_T.end()){
+                    window_map[S[end]]++;
+                    if(window_map[S[end]]==set_of_T[S[end]]){
+                        contain_num++;
+                    }
+                }
+                end++;
+            }
+        }
+        if(start_index==-1) return "";
+        return S.substr(start_index,min_len);
+    }
+};
+
+// solution from internet
+// Returns false if no valid window is found. Else returns 
+// true and updates minWindowBegin and minWindowEnd with the 
+// starting and ending position of the minimum window.
+bool minWindow(const char* S, const char *T, 
+               int &minWindowBegin, int &minWindowEnd) {
+  int sLen = strlen(S);
+  int tLen = strlen(T);
+  int needToFind[256] = {0};
+ 
+  for (int i = 0; i < tLen; i++)
+    needToFind[T[i]]++;
+ 
+  int hasFound[256] = {0};
+  int minWindowLen = INT_MAX;
+  int count = 0;
+  for (int begin = 0, end = 0; end < sLen; end++) {
+    // skip characters not in T
+    if (needToFind[S[end]] == 0) continue;
+    hasFound[S[end]]++;
+    if (hasFound[S[end]] <= needToFind[S[end]])
+      count++;
+ 
+    // if window constraint is satisfied
+    if (count == tLen) {
+      // advance begin index as far right as possible,
+      // stop when advancing breaks window constraint.
+      while (needToFind[S[begin]] == 0 ||
+            hasFound[S[begin]] > needToFind[S[begin]]) {
+        if (hasFound[S[begin]] > needToFind[S[begin]])
+          hasFound[S[begin]]--;
+        begin++;
+      }
+ 
+      // update minWindow if a minimum length is met
+      int windowLen = end - begin + 1;
+      if (windowLen < minWindowLen) {
+        minWindowBegin = begin;
+        minWindowEnd = end;
+        minWindowLen = windowLen;
+      } // end if
+    } // end if
+  } // end for
+ 
+  return (count == tLen) ? true : false;
+}

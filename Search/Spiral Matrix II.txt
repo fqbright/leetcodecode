@@ -1,0 +1,42 @@
+class Solution {
+public:
+    vector<vector<int> > generateMatrix(int n) {
+      vector<vector<int>> r(n,vector<int>(n));
+      const int dir[4][2] = {{0,1},{1,0},{0,-1},{-1,0}};
+      int i = 1, row = 0, col = 0, d = 0;
+      while(i<=n*n){
+        r[row][col] = i++;
+        if(row+dir[d][0]<0 || row+dir[d][0]>=n ||  //为了避免判断每行每列要填多少个数字，直接碰到有填了数字的就转方向
+            col+dir[0][1]<0 || col+dir[d][1]>=n ||
+              r[row+dir[d][0]][col+dir[d][1]] != 0)
+          d = (d + 1) % 4;
+        row += dir[d][0];
+        col += dir[d][1];
+      }
+      return r;
+    }
+};
+
+//by lzr
+一圈一圈, 从外到内做. 每圈从左上角开始填. 设现在在宽为k的圈上, 填的时候, 从(i, i) 出发, 维护一个方向值d, 每走k-1步就转一次方向.
+用方向数组D来简化实现.
+class Solution {
+public:
+    vector<vector<int> > generateMatrix(int n) {
+        int i, j, d, r, k, p;
+        vector<vector<int> > mat(n, vector<int>(n));        
+        const int D[4][2] = {{0, 1}, {1, 0}, {0, -1}, {-1, 0}};
+        r = 1;
+        for(k = n; k > 0; k-=2){
+            i = j = (n - k) / 2;
+            for(d = 0; d < 4; d++){
+                for(p = 1; p < k; p++){
+                    mat[i][j] = r++;
+                    i += D[d][0]; j += D[d][1];
+                }
+            }
+        }
+        if(n % 2) mat[n/2][n/2] = r;
+        return mat;
+    }
+};

@@ -1,0 +1,88 @@
+class Solution {
+public:
+    bool check(vector<string>& sol,int now,int pos,int size)
+    {
+        for(int i=1;now-i>=0&&pos-i>=0;i++)
+            if(sol[now-i][pos-i]=='Q')
+                return false;
+        for(int i=1;now-i>=0&&pos+i<size;i++)
+            if(sol[now-i][pos+i]=='Q')
+                return false;
+        for(int i=now-1;i>=0;i--)
+            if(sol[i][pos]=='Q')
+                return false;
+        return true;
+    }
+    void NQueue(vector<vector<string>>& ans,vector<string>& sol,int now,int size)
+    {
+        if(now==size)
+        {
+            ans.push_back(sol);
+            return;
+        }
+        for(int i=0;i<size;i++)
+        {
+            if(sol[now][i]=='.'&&check(sol,now,i,size))
+            {
+                sol[now][i] = 'Q';
+                NQueue(ans,sol,now+1,size);
+                sol[now][i] = '.';
+            }
+        }
+    }
+    vector<vector<string> > solveNQueens(int n) {
+        vector<vector<string>> ans;
+        vector<string> sol;
+        for(int i=0;i<n;i++)
+        {
+            string s;
+            for(int j=0;j<n;j++)
+                s += '.';
+            sol.push_back(s);
+        }
+        NQueue(ans,sol,0,n);
+        return ans;
+    }
+};
+
+//用一个数组可以表示一个N皇后的solution。r[i]表示第i列的皇后的位置
+class Solution {
+    bool check(vector<int>& r){
+      int size = r.size();
+      for(int i = 0; i < size - 1; ++i){
+        int diff = abs(r[i] - r.back());
+        if( diff == 0 || size - i - 1 == diff)
+          return false;
+      }
+      return true;
+    }
+    void PlaceQueue(int num, int size, vector<int>& r, vector<vector<string>>& board){
+      if(num == size){
+        vector<string> sol;
+        for(int col = 0; col < size; ++col){
+          string s;
+          for(int row = 0; row < size; ++row){
+            if(r[col] == row)
+              s += "Q";
+            else s += ".";
+          }
+          sol.push_back(s);
+        }
+        board.push_back(sol);
+      }
+      for(int i = 0; i < size; ++i){
+        r.push_back(i);
+        if(check(r)){
+          PlaceQueue(num+1, size, r, board);
+        }
+        r.pop_back();
+      }
+    }
+public:
+    vector<vector<string> > solveNQueens(int n) {
+      vector<int> r;
+      vector<vector<string>> board;
+      PlaceQueue(0,n,r,board);
+      return board;
+    }
+};

@@ -1,0 +1,12 @@
+class Solution {
+    int FindDep(TreeNode* root){
+      if(!root) return 0;
+      int l = FindDep(root->left);
+      int r = FindDep(root->right);
+      return max(l,r)+1;
+    }
+public:
+    int maxDepth(TreeNode *root) {
+      return FindDep(root);
+    }
+};

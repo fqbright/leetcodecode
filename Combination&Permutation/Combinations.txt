@@ -1,0 +1,23 @@
+class Solution {
+private:
+    int n,k;
+public:
+    void ComRec(vector<vector<int>>& result,vector<int>& path,int p){
+        if(path.size()==k)
+          result.push_back(path);
+        else if(p<n){
+            ComRec(result,path,p+1);
+            path.push_back(p+1);
+            ComRec(result,path,p+1);
+            path.pop_back();
+        }
+    }
+    vector<vector<int> > combine(int n, int k) {
+        vector<vector<int>> result;
+        vector<int> path;
+        this->n = n;
+        this->k = k;
+        ComRec(result,path,0);
+        return result;
+    }
+};

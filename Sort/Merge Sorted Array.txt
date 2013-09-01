@@ -1,0 +1,24 @@
+class Solution {
+public:
+    void merge(int A[], int m, int B[], int n) {
+        while(m>0||n>0){
+          if(n<=0 || (m>0&&A[m-1]>B[n-1]) )
+            A[m+n-1] = A[--m];
+          else 
+            A[m+n-1] = B[--n];
+        }
+    }
+};
+
+//更简洁。当B全部搬到A之后，merge就结束了
+class Solution {
+public:
+    void merge(int A[], int m, int B[], int n) {
+        while(n>0){
+        if(m <=0 || A[m-1] < B[n-1])
+            A[n+m-1] = B[--n];
+        else
+            A[n+m-1] = A[--m];
+        }
+    }
+};

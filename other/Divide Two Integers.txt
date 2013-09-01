@@ -1,0 +1,35 @@
+//不用long long或者double，float。特判等于MIN_INT时的情况。
+//不用大数没有想到特别简洁的方法
+class Solution {
+public:
+    int divide(int dividend, int divisor) {
+      const int MASK = 1<<30, MIN_INT = (unsigned)1<<31;
+      assert(divisor!=0);
+      int r = 0, t = 1;
+      if(divisor==MIN_INT){
+        if(dividend==MIN_INT)
+          return 1;
+        return 0;
+      }else if(dividend==MIN_INT){
+        dividend += abs(divisor);
+        r++;
+      }
+      bool sign = (dividend<0)^(divisor<0);
+      dividend = abs(dividend);
+      divisor = abs(divisor);
+      int ite_div = divisor;
+      while(!(MASK&ite_div)){
+        ite_div <<= 1;
+        t <<= 1;
+      }
+      while(ite_div >= divisor){
+        if(dividend >= ite_div){
+          r += t;
+          dividend -= ite_div;
+        }
+        t >>= 1;
+        ite_div >>= 1;
+      }
+      return sign?-r:r;
+    }
+};

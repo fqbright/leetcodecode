@@ -1,0 +1,62 @@
+//大数据264ms。记忆化搜索
+class Solution {
+private:
+      struct Node{
+        int i,j,len;
+        Node(int i0,int j0,int l):i(i0),j(j0),len(l){}
+        bool operator<(const Node& node)const{
+          if(i!=node.i) return i<node.i;
+          if(j!=node.j) return j<node.j;
+          return len<node.len;
+        }
+      };
+      map<Node,bool> can_match_;
+      string s1_,s2_;
+public:
+    bool scramble(int st_fir,int st_sec,int len){
+        if(len==1)
+          return s1_[st_fir]==s2_[st_sec];
+    	map<Node,bool>::iterator ite = can_match_.find(Node(st_fir,st_sec,len));
+		if(ite!=can_match_.end())
+			return ite->second;
+		for(int i=1;i<len;i++){
+			bool sign = (scramble(st_fir,st_sec,i)&&scramble(st_fir+i,st_sec+i,len-i))||
+				(scramble(st_fir,st_sec+len-i,i)&&scramble(st_fir+i,st_sec,len-i));
+			if(sign) return can_match_[Node(st_fir,st_sec,len)] = true;
+		}
+        return can_match_[Node(st_fir,st_sec,len)] = false;
+    }
+    bool isScramble(string s1, string s2) {
+        s1_ = s1;
+        s2_ = s2;
+        can_match_.clear();
+        if(s1.length()!=s2.length())
+          return false;
+        return scramble(0,0,s1.length());
+    }
+};
+
+//直接用O(n^4)的dp解。大数据372ms.比上面的慢，因为这个算法把所有的解都算出来
+//上面那个算法记忆化搜索，省掉一些
+class Solution {
+public:
+    bool isScramble(string s1, string s2) {
+        int n = s1.length();
+        vector<vector<vector<bool>>> ret(1+n,vector<vector<bool>>(n,vector<bool>(n)));
+        for(int i=0;i<n;i++)
+          for(int j=0;j<n;j++)
+            ret[1][i][j] = s1[i]==s2[j];
+        for(int i=2;i<=n;i++){
+          for(int j=0;j+i-1<n;j++)
+            for(int k=0;k+i-1<n;k++){
+              for(int l=1;l<i;l++)
+                if((ret[l][j][k]&&ret[i-l][j+l][k+l])||
+                   (ret[l][j][k+i-l]&&ret[i-l][j+l][k])){
+                    ret[i][j][k] = true;
+                    break;
+                }
+            }    
+        }
+        return ret[n][0][0];
+    }
+};

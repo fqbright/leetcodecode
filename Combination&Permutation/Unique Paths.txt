@@ -1,0 +1,15 @@
+class Solution {
+public:
+    int uniquePaths(int m, int n) {
+        m--;
+        n--;
+        int sum = m+n;
+        m = min(m,n);
+        long long ans = 1;
+        for(int i=0;i<m;i++){
+            ans *= sum-i;
+            ans /= i+1;
+        }
+        return ans;
+    }
+};

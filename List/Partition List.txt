@@ -1,0 +1,59 @@
+//冒泡排序，最坏情况O(n^2)
+class Solution {
+public:
+    ListNode *partition(ListNode *head, int x) {
+        // Start typing your C/C++ solution below
+        // DO NOT write int main() function
+        ListNode* p1 = head;
+        if(head==NULL) return head;
+        bool sign = true;
+        while(sign)
+        {
+            sign = false;
+            p1 = head;
+            while(p1!=NULL)
+            {
+                if(p1->next!=NULL&&p1->val>=x&&p1->next->val<x)
+                {
+                    sign = true;
+                    std::swap(p1->val,p1->next->val);
+                }
+                p1 = p1->next;
+            }
+        }
+        return head;
+    }
+};
+
+//用了额外的O(n)空间，时间复杂度O(n)，把值都拿出来先
+class Solution {
+public:
+    ListNode *partition(ListNode *head, int x) {
+        ListNode* p1 = head;
+        if(head==NULL) return head;
+        vector<int> vec;
+        while(p1!=NULL){
+            vec.push_back(p1->val);
+            p1 = p1->next;
+        }
+        p1 = head;
+        bool sign = true;
+        int pos = 0;
+        while(p1!=NULL){
+            while(sign&&pos<vec.size()&&vec[pos]>=x)
+                pos++;
+            while(!sign&&pos<vec.size()&&vec[pos]<x)
+                pos++;
+            if(pos<vec.size()){
+                p1->val = vec[pos++];
+                p1 = p1->next;
+            }else{
+                if(!sign)
+                    p1 = p1->next;
+                sign = false;
+                pos = 0;
+            }
+        }
+        return head;
+    }
+};

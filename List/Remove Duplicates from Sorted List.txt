@@ -1,0 +1,42 @@
+//sorted
+class Solution {
+public:
+    ListNode *deleteDuplicates(ListNode *head) {
+        if(!head) return head;
+        ListNode* ite = head,*tmp;
+        while(ite->next){
+          if(ite->val==ite->next->val){
+            tmp = ite->next;
+            ite->next = tmp->next;
+            delete tmp;
+          }else
+            ite = ite->next;
+        }
+        return head;
+    }
+};
+
+//unsorted
+class Solution {
+public:
+    ListNode *deleteDuplicates(ListNode *head) {
+        ListNode* dummy = new ListNode(1),*ite,*pre=dummy;;
+        dummy->next = head;
+        ite = head;
+        set<int> s;
+        while(ite){
+            if(s.find(ite->val)!=s.end()){
+                pre->next = ite->next;
+                delete ite;
+                ite=pre->next;
+            }else{
+                s.insert(ite->val);
+                pre = ite;
+                ite = ite->next;
+            }
+        }
+        head = dummy->next;
+        delete dummy;
+        return head;
+    }
+};

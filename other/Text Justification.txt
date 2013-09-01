@@ -1,0 +1,37 @@
+class Solution {
+public:
+    vector<string> fullJustify(vector<string> &words, int L) {
+      vector<string> r;
+      for(int i = 0;i < words.size();){
+        string s = words[i++];
+        int len = s.length(),j = i;
+        while(j < words.size() && len + words[j].length() + 1 <= L)
+          len += words[j++].length() + 1;
+        if( j - i == 0){   //注意当只有一个word的情况
+          for(int k = 0; k < L - len; ++k)
+            s += " ";
+        }else{
+          if(j != words.size()){
+              int max_space = 1 + (L - len) / (j - i), num = (L - len) % (j - i);
+              while(i < j){
+                for(int k = 0; k < max_space; ++k)
+                  s += " ";
+                if(num > 0)
+                  s += " ";
+                --num;
+                s += words[i++];
+              }
+          }else{
+              while(i < j){
+                s += " ";
+                s += words[i++];
+              }
+              while( s.length() < L )
+                s += " ";
+          }
+        }
+        r.push_back(s);
+      }
+    return r;
+    }
+};

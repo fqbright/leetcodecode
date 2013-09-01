@@ -1,0 +1,32 @@
+//用栈来实现zigzag
+class Solution {
+public:
+    vector<vector<int> > zigzagLevelOrder(TreeNode *root) {
+      vector<vector<int>> result;
+      stack<TreeNode*> stk[2];
+      int current=0;
+      stk[current].push(root);
+      while(!stk[current].empty()){
+        vector<int> cur_level;
+        int next = (current+1)%2;
+        while(!stk[current].empty()){
+          TreeNode* tmp = stk[current].top();
+          stk[current].pop();
+          if(tmp){
+            cur_level.push_back(tmp->val);
+            if(current){
+              stk[next].push(tmp->right);
+              stk[next].push(tmp->left);
+            }else{
+              stk[next].push(tmp->left);
+              stk[next].push(tmp->right);
+            }
+          }
+        }
+        if(!cur_level.empty())
+          result.push_back(cur_level);
+        current = next;
+      }
+      return result;
+    }
+};

@@ -1,0 +1,59 @@
+//O(n^2)的解
+//最快的解可以达到O(n)，后缀数组或者一个很triky的方法
+class Solution {
+public:
+    string longestPalindrome(string s) {
+      int max_len=0, st_index=0;
+      for(int i=0;i<2*s.length()-1;i++){
+        int l = i/2-1, r = i/2+1;
+        if(i%2)  //如果是奇数，表示中间元素是空白，左字符要比偶数时多1
+          l++;
+        while(l>=0&&r<s.length()&&s[l]==s[r]){
+          l--;
+          r++;
+        }
+        if(r-l-1>max_len){
+          max_len = r-l-1;
+          st_index = l+1;
+        }
+      }
+      return s.substr(st_index,max_len);
+    }
+};
+
+//O(n)+O(n)
+//Manacher’s Algorithm
+class Solution {
+public:
+    bool check(const string& s,int start,int len){
+        if((start+len)%2==0|| //说明是特殊字符
+          //不越界并且字符相同
+          (start+len<2*s.length()&&start-len>=0&&s[(start-len)/2]==s[(start+len)/2]))
+          return true;
+        return false;
+    }
+    string longestPalindrome(string s) {
+        if(!s.length()) return string("");
+        int longest_index=0; //记录最长回文串的中间index
+        int *max_pal = new int[2*s.length()];//以第i个字符为中心最长回文串的长度
+        int pre_index = 0;   
+        max_pal[0] = 0;
+        for(int i=1;i<2*s.length();i++){
+            int mirror = 2*pre_index-i;  //跟pre_index中心称那个index
+            if(mirror<0   //当前回文串足够长
+                ||max_pal[mirror]+i>=max_pal[pre_index]+pre_index){
+                max_pal[i] = max_pal[pre_index]+pre_index-i;
+                while(check(s,i,max_pal[i]+1))
+                  max_pal[i]++;
+                pre_index = i;
+                if(max_pal[longest_index]<max_pal[pre_index]){
+                    longest_index = pre_index;
+                }
+            }else
+                max_pal[i] = max_pal[mirror];
+        }
+        int len = max_pal[longest_index];
+        delete max_pal;
+        return s.substr((longest_index-len)/2,len);
+    }
+};

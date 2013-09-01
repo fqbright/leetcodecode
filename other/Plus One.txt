@@ -1,0 +1,16 @@
+class Solution {
+public:
+    vector<int> plusOne(vector<int> &digits) {
+      vector<int> r;
+      int carry = 1,i=(int)digits.size()-1;
+      while(i>=0 || carry == 1){
+        if(i>=0)
+          carry += digits[i];
+        r.push_back(carry%10);
+        carry /= 10;
+        i--;
+      }
+      reverse(r.begin(),r.end());
+      return r;
+    }
+};

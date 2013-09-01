@@ -1,0 +1,26 @@
+//参考来源：http://discuss.leetcode.com/questions/1266/palindrome-partitioning-ii
+//思路跟我原来的相同，但是实现的代码长度较短，主要在于预处理is_palin跟
+//整个dp过程放在了一起。复杂度O(n^2)
+//思路：预处理出来所有子串是不是回文，存到is_palin中，复杂度O(n^2)
+//然后计算min_cut,min_cut[i]表示[0,i-1]这个子串最少cut多少次成回文
+//is_palin的更新顺序比较巧妙，这里是先确定终止节点i，再确定起始节点j，如果这一个
+//子串是回文，那么可以更新min_cut[i+1]。
+class Solution {
+public:
+    int minCut(string s) {
+        int len = s.length();
+        vector<int> min_cut(len+1);
+        for(int i=0;i<=len;i++)
+          min_cut[i] = i-1;
+        vector<vector<bool>> is_palin(len,vector<bool>(len));
+        for(int i=0;i<len;i++){
+            for(int j=i;j>=0;j--){
+                if(s[i]==s[j]&&(i-j<=2||is_palin[j+1][i-1])){
+                  is_palin[j][i] = true;
+                  min_cut[i+1] = min(min_cut[i+1],min_cut[j]+1);
+                }
+            }
+        }
+        return min_cut[len];
+    }
+};

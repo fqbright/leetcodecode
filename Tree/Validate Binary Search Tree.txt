@@ -1,0 +1,18 @@
+//一开始思路是返回子树的取值范围，再判断当前树是不是一个BST，写起来很麻烦
+//换个思路，每次传入当前节点允许的取值范围，参考leetcode的讨论
+class Solution {
+    bool IsValid(TreeNode* root,int min,int max){
+      if(!root) return true;
+      if(root->val>min && root->val<max){
+        return IsValid(root->left,min,root->val) &&
+                 IsValid(root->right,root->val,max);
+      }
+      return false;
+    }
+public:
+    bool isValidBST(TreeNode *root) {
+      return IsValid(root,(unsigned)1<<31,(unsigned)1<<31-1);
+    }
+};
+
+//中序遍历

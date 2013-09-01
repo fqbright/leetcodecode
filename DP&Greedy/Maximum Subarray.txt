@@ -1,0 +1,13 @@
+//主要就是注意如果全部数字都是负数时怎么办。
+class Solution {
+public:
+    int maxSubArray(int A[], int n) {
+        int max_sum=A[0],sum=0;
+        for(int i=0;i<n;i++){
+            sum += A[i];
+            max_sum = max(sum,max_sum); //必须先更新max_sum，如果先更新sum就有问题
+            sum = max(0,sum); 
+        }
+        return max_sum;
+    }
+};

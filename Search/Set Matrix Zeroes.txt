@@ -1,0 +1,75 @@
+//常量空间的，用第一个0所在的行和列保存结果
+class Solution {
+public:
+    void setZeroes(vector<vector<int> > &matrix) {
+        int i, j, i0, j0;
+        int n, m;
+        n = matrix.size(); 
+        if(n == 0) return;
+        m = matrix[0].size();
+        for(i0 = 0; i0 < n; i0++){
+            for(j0 = 0; j0 < m; j0++){
+                if(matrix[i0][j0] == 0) break;
+            }
+            if(j0 < m) break;
+        }
+        if(i0 == n) return;
+        for(i = 0; i < n; i++){
+            for(j = 0; j < m; j++){
+                if(i == i0 and j == j0) continue;
+                if(matrix[i][j] == 0){
+                    matrix[i0][j] = matrix[i][j0] = 0;
+                }
+            }
+        }
+        for(i=0;i<n;i++){
+            if(i==i0)continue;
+            for(j=0;j<m;j++){
+                if(j==j0)continue;
+                if(!matrix[i0][j]||!matrix[i][j0])
+                   matrix[i][j] = 0;
+            }
+        }
+        for(i = 0; i < n; i++) matrix[i][j0] = 0;
+        for(j = 0; j < m; j++) matrix[i0][j] = 0;
+    }
+};
+
+//用第一行第一列来记录要清0的位置
+class Solution {
+public:
+    void setZeroes(vector<vector<int> > &matrix) {
+      if(matrix.empty()) return;
+      int n = matrix.size(), m = matrix[0].size();
+      int size = max(n,m);
+      bool col = false, row = false;
+      for(int i = 0; i < size; ++i){   //记录第一行第一列是不是需要清0
+        if(i < n && matrix[i][0] == 0)
+          col = true;
+        if(i < m && matrix[0][i] == 0)
+          row = true;
+      }
+      for(int i = 1; i < n; ++i){     //[i,j]为0的话，相应把[i,0],[0,j]记录为0
+        for(int j = 1; j < m; ++j){
+          if(matrix[i][j] == 0){
+            matrix[i][0] = 0;
+            matrix[0][j] = 0;
+          }
+        }
+      }
+      for(int i = 1; i < size; ++i){  //根据第一行第一列对其他行列清零
+        if(i < n && matrix[i][0] == 0)
+          for(int j = 0; j < m; ++j)
+            matrix[i][j] = 0;
+        if(i < m && matrix[0][i] == 0)
+          for(int j = 0; j < n; ++j)
+            matrix[j][i] = 0;
+      }
+      if(col || row){              //处理第一行第一列
+        for(int i = 0; i < size; ++i){
+          if(i < n && col) matrix[i][0] = 0;
+          if(i < m && row) matrix[0][i] = 0;
+        }
+      }
+    }
+};
